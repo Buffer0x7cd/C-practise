@@ -1,0 +1,136 @@
+#include "vector.h"
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+Vector* vector_init(Vector *vector)
+{
+    vector->size = 0;
+    vector->capacity = VECTOR_CAPACITY;
+    vector->buffer = malloc(sizeof(vectorType) * VECTOR_CAPACITY);
+    if (vector->buffer)
+    {
+        return vector;
+    }
+    return 0;
+
+}
+
+static bool Vector_resize(Vector *vector)
+{
+    vectorType *newBuffer = realloc(vector->buffer, (vector->capacity * 2));
+    if (newBuffer)
+    {
+        free(vector->buffer);
+        vector->buffer = newBuffer;
+        return true;
+    }
+    return false;
+}
+
+static bool __check_and_expend_buffer(Vector *vector)
+{
+    if (vector->size >= vector->capacity)
+    {
+        if (Vector_resize(vector))
+            return true;
+        else
+            return false;
+    }
+    return true;
+}
+
+static bool __check_and_shrink_buffer(Vector *vector)
+{
+    return true;
+}
+
+int Vector_size(Vector *vector)
+{
+    return vector->size;
+}
+
+int Vector_capacity(Vector *vector)
+{
+    return vector->capacity;
+}
+
+bool Vector_isEmpty(Vector *vector)
+{
+    vector->size > 0? true : false;
+}
+
+vectorType Vector_at(Vector *vector, int index, int *status)
+{
+    if (index > (vector->size -1) || index < 0 )
+    {
+        *status =  -1;
+        return 0;
+    }
+    assert(index < vector->size && index >= 0);
+    *status =  0;
+    return *(vector->buffer + sizeof(vectorType) * index);
+}
+
+bool Vector_push(Vector *vector, vectorType element)
+{
+    if (__check_and_expend_buffer(vector))
+    {
+        vector->buffer[vector->size] = element;
+        vector->size++;
+    }
+    else
+    {
+        #ifdef DEBUG
+        perror("Error pushing element in list: ");
+        #endif
+        return false;
+    }
+    
+}
+
+
+bool Vector_insert(Vector *vector, int index, vectorType element)
+{
+    if (__check_and_expend_buffer(vector))
+    { 
+        for (int i = index; i < vector->size; i++)
+        {
+            vectorType  tmp = vector->buffer[i];
+            vector->buffer[i] = element;
+            element = tmp;
+        }
+
+        vector->buffer[vector->size] = element;
+
+        return true;
+    }
+    else
+    {
+        #ifdef DEBUG
+        perror("Error inserting element in list: ");
+        #endif
+        return false;
+    }
+}
+
+vectorType Vector_pop(Vector *vector, bool *status)
+{
+    //If list is empty  then set status to false
+    if ( !vector->size)
+    {
+        *status = false;
+        return 0;
+    }
+    assert ((vector->size -1) > 0);
+    return vector->buffer[vector->size - 1];
+}
+
+vectorType  (Vector *vector, int index);
+
+
+
+
+
+
+

@@ -1,0 +1,38 @@
+#include <stdbool.h>
+#define vectorType int
+#define VECTOR_CAPACITY 16
+
+
+typedef struct vector
+{
+    int size;
+    int capacity;
+    vectorType *buffer;
+} Vector;
+
+
+Vector* vector_init(Vector *vector);
+
+int Vector_size(Vector *vector);
+
+int Vector_capacity(Vector *vector);
+
+bool Vector_isEmpty(Vector *vector);
+
+vectorType Vector_at(Vector *vector, int index, int *status);
+
+bool Vector_push(Vector *vector, vectorType element);
+
+bool Vector_insert(Vector *vector, int index, vectorType element);
+
+vectorType Vector_pop(Vector *vector, bool *status);
+
+vectorType Vector_delete(Vector *vendor, int index);
+
+vectorType Vector_remove(Vector *vector, vectorType element);
+
+vectorType Vector_find(Vector *vector, vectorType  element);
+
+static bool Vector_resize(Vector *vector);
+static bool __check_and_expend_buffer(Vector *vector);
+static bool __check_and_shrink_buffer(Vector *vector);
