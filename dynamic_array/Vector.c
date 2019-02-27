@@ -1,7 +1,13 @@
 #include "Vector.h"
 #include "stdlib.h"
+#include "stdio.h"
 
-
+void __printVectorDebug(Vector *vectorPtr)
+{
+    for (int i = 0; i < vectorPtr->currentSize ; i++)
+        printf(" %d,", vectorPtr->elementBuffer[i]);
+    printf("\n");
+}
 
 static void  __vectorResize(Vector *vector, int newCapacity)
 {
@@ -38,8 +44,10 @@ static void __shiftVectorToRight(Vector *vector, int startIndex)
     vectorType temp = vector->elementBuffer[startIndex];
     for (int i = (startIndex + 1); i < vector->currentSize; i++)
     {
-        __swap(&temp, &i);
+
+        __swap(&temp, (vector->elementBuffer + i));
     }
+
     __checkAndResizeBuffer(vector);
     vector->elementBuffer[vector->currentSize] = temp;
     vector->currentSize += 1;
@@ -49,9 +57,9 @@ static void __shiftVectorToLeft(Vector *vector, int startIndex)
 {
     for (int i = startIndex; i  < (vector->currentSize - 1); i++ )
     {
-        __swap(vector->elementBuffer[i], vector->elementBuffer[i+1]);
+        __swap(vector->elementBuffer + i, vector->elementBuffer + (i + 1));
     }
-    vector->elementBuffer[vector->currentSize - 1] = NULL;
+    vector->elementBuffer[vector->currentSize - 1] = -1;
     vector->currentSize -= 1;
     __checkAndResizeBuffer(vector);
 }
@@ -64,7 +72,6 @@ void vectorInit(Vector *vector)
                                     sizeof(vectorType));
     
     assert (vector->elementBuffer != NULL);
-    return vector;
 }
 
 int vectorSize(Vector *vector)
@@ -103,6 +110,7 @@ void vectorInsert(Vector *vector, int index, vectorType element)
     assert(vector->elementBuffer != NULL);
 
     __shiftVectorToRight(vector, index);
+
     vector->elementBuffer[index] = element;
 }
 
@@ -137,4 +145,10 @@ vectorType vectorFind(Vector *vector, vectorType element)
     return -1;
 }
 
+void vectorFree(Vector *vector)
+{
+    free(vector->elementBuffer);
+    vector->currentSize = 0;
+    vector->maxSize = VECTOR_INITIAL_SIZE;
+}
 

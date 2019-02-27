@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <assert.h>
 #define vectorType int
 #define VECTOR_INITIAL_SIZE 16
 
@@ -37,9 +38,9 @@ vectorType vectorPop(Vector *vector);
 
 void vectorDelete(Vector *vector, int index);
 
-int vectorRemove(Vector *vector, vectorType element);
-
 int vectorFind(Vector *vector, vectorType element);
+
+void vectorFree(Vector *vector);
 
 static void __vectorResize(Vector *vector, int newCapacity);
 
